@@ -2,12 +2,12 @@ const { Router, response } = require('express')
 const { v4: uuid } = require('uuid');
 
 const routes = Router()
-const costumers = [];
+const customers = [];
 
 routes.post('/account', (req, res) => {
    const { cpf, name } = req.body
 
-   const cpfAlreadExists = costumers.some(
+   const cpfAlreadExists = customers.some(
      costumer => costumer.cpf === cpf
     )
 
@@ -16,7 +16,7 @@ routes.post('/account', (req, res) => {
      .json({ message: 'cpf já cadastrado'})
    }
 
-   costumers.push({
+   customers.push({
        id: uuid(),
        name,
        cpf,
@@ -27,14 +27,16 @@ routes.post('/account', (req, res) => {
 
 })
 
+routes.get('/account', (req, res) => {
+  return res.json(customers)
+})
+
 routes.get('/statements/:cpf', (req, res) => {
     const { cpf } = req.params
 
-    const costumer = costumers.filter(
-      costumer => costumer.cpf === cpf
-    )
+    const customer = customers.find( customer => customer.cpf === cpf)
 
-    return res.json(costumer.statement)
+    return res.json(customer.statement)
 })
 
 module.exports = routes
