@@ -5,18 +5,18 @@ const routes = Router()
 const customers = [];
 
 routes.post('/account', (req, res) => {
-   const { cpf, name } = req.body
+  const { cpf, name } = req.body
 
-   const cpfAlreadExists = customers.some(
-     costumer => costumer.cpf === cpf
-    )
+  const cpfAlreadExists = customers.some(
+     (costumer) => costumer.cpf === cpf
+)
 
     if(cpfAlreadExists){
      return  res.status(400)
      .json({ message: 'cpf já cadastrado'})
    }
 
-   customers.push({
+  customers.push({
        id: uuid(),
        name,
        cpf,
@@ -32,9 +32,12 @@ routes.get('/account', (req, res) => {
 })
 
 routes.get('/statements/:cpf', (req, res) => {
-    const { cpf } = req.params
+  const { cpf } = req.params
 
-    const customer = customers.find( customer => customer.cpf === cpf)
+  const customer = customers.reduce(customer => customer.cpf === cpf)
+    if(!costumer) {
+        return res.status(400).json({error: 'user not found'}) 
+    }
 
     return res.json(customer.statement)
 })
