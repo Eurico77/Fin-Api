@@ -1,14 +1,15 @@
-const { Router, response } = require('express')
+const { Router } = require('express')
 const { v4: uuid } = require('uuid');
+const { customers } = require('../util')
+const verifyIfExistsAccount = require('../middlewares/verifyExistsAccount')
 
 const routes = Router()
-const customers = [];
 
 routes.post('/account', (req, res) => {
   const { cpf, name } = req.body
 
   const cpfAlreadExists = customers.some(
-     (costumer) => costumer.cpf === cpf
+     costumer => costumer.cpf === cpf
 )
 
     if(cpfAlreadExists){
@@ -31,15 +32,9 @@ routes.get('/account', (req, res) => {
   return res.json(customers)
 })
 
-routes.get('/statements/:cpf', (req, res) => {
-  const { cpf } = req.params
-
-  const customer = customers.reduce(customer => customer.cpf === cpf)
-    if(!costumer) {
-        return res.status(400).json({error: 'user not found'}) 
-    }
-
-    return res.json(customer.statement)
+routes.get('/statements', verifyIfExistsAccount, (req, res, next) => {
+  const { customer } = req
+  return res.json(customer.statement)
 })
 
-module.exports = routes
+module.exports = routes, customers 
