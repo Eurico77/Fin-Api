@@ -74,4 +74,22 @@ routes.post('/withdraw', verifyIfExistsAccount, (req, res) => {
 
 })
 
+routes.get('/statements/date', verifyIfExistsAccount, (req, res) => {
+  const { customer } = req
+  const { date } = req.query
+
+  const formate = date.split('-').reverse().join('-')
+  console.log(formate);
+  const formatDate = new Date(formate + " 00:00")
+
+  const statement = customer.statement.filter(
+    statements => statements.created_at.toDateString() === new Date(formatDate)
+    .toDateString()
+    
+)
+
+
+  return res.json(statement)
+})
+
 module.exports = routes 
